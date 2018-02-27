@@ -1,9 +1,9 @@
 <template>
   <div class="sign-up">
     <p>Let's create a new account!</p>
-    <input type="email" placeholder="email"> <br />
-    <input type="password" placeholder="password"><br />
-    <button class="button">Sign Up</button>
+    <input type="email" placeholder="email" v-model="email"> <br />
+    <input type="password" placeholder="password" v-model="password"><br />
+    <button @click="signUp" class="button">Sign Up</button>
     <span><router-link to="/login"> go back to login</router-link></span>
   </div>
 </template>
@@ -12,9 +12,23 @@
 export default {
   name: 'signUp',
   data () {
-    return {}
+    return {
+      email: null,
+      password: null
+    }
   },
-  methods: {}
+  methods: {
+    signUp () {
+      this.$fbase.auth().createUserWithEmailAndPassword(this.email, this.password)
+       .then(
+         function(user) {
+           alert('your user has been created!')
+         }, function (err) {
+           alert('Whooops ' + err.message)
+         }
+       )
+    }
+  }
 }
 </script>
 

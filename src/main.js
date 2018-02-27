@@ -17,6 +17,7 @@ var config = {
 };
 firebase.initializeApp(config)
 
+Vue.prototype.$fbase = firebase
 Vue.use(Buefy)
 Vue.config.productionTip = false
 

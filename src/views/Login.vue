@@ -1,8 +1,8 @@
 <template>
  <div class="login">
    <h3>Login</h3>
-    <input type="text" placeholder="email"> <br />
-    <input type="password" placeholder="pass"> <br />
+    <input type="text" placeholder="email" v-model="email"> <br />
+    <input type="password" placeholder="pass" v-model="password"> <br />
     <button @click="login" class="button">Lesgo</button>
    <p>You don't have an account? <router-link to="/signup"> Create one! </router-link></p>
  </div>
@@ -12,11 +12,22 @@
 export default {
   name: 'login',
   data () {
-    return {}
+    return {
+      email: null,
+      password: null
+    }
   },
   methods: {
     login () {
-      this.$router.replace('/')
+      this.$fbase.auth().signInWithEmailAndPassword(this.email, this.password).then(
+        function (user) {
+          alert('Yay, you are now connected!')
+        },
+        function (err) {
+          alert('Whoops. ' + err.message)
+        }
+      )
+      // this.$router.replace('/')
     }
   }
 }
