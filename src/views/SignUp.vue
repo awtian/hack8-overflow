@@ -20,30 +20,32 @@ export default {
   methods: {
     signUp () {
       this.$fbase.auth().createUserWithEmailAndPassword(this.email, this.password)
-       .then(
-         function(user) {
-           alert('your user has been created!')
-         }, function (err) {
-           alert('Whooops ' + err.message)
-         }
-       )
+        .then(
+          (user) => {
+            this.$store.commit('SET_USER', user)
+            this.$router.replace('home')
+          }, (err) => {
+            alert('Whooops ' + err.message)
+          }
+        )
     }
   }
 }
 </script>
 
 <style scoped>
-.signUp {
+.sign-up {
   margin-top: 40px;
+  text-align: center !important;
 }
 input {
   margin: 10px 0;
-  width: 20%;
+  width: 200px;
   padding: 15px;
 }
 button {
   margin-top: 10px;
-  width: 20%;
+  width: 100px;
 }
 span {
   display: block;

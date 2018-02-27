@@ -20,14 +20,14 @@ export default {
   methods: {
     login () {
       this.$fbase.auth().signInWithEmailAndPassword(this.email, this.password).then(
-        function (user) {
-          alert('Yay, you are now connected!')
+        (user) => {
+          this.$store.commit('SET_USER', user)
+          this.$router.replace('home')
         },
-        function (err) {
+        (err) => {
           alert('Whoops. ' + err.message)
         }
       )
-      // this.$router.replace('/')
     }
   }
 }
@@ -36,15 +36,16 @@ export default {
 <style scoped>
 .login {
   margin-top: 40px;
+  text-align: center !important;
 }
 input {
   margin:10px 0;
-  width: 20%;
+  width: 200px;
   padding: 15px;
 }
 button {
   margin-top: 20px;
-  width: 10%;
+  width: 100px;
   cursor: pointer;
 }
 p{
