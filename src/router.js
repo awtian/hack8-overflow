@@ -32,13 +32,19 @@ let router = new Router({
         {
           path: '',
           name: 'home',
-          component: Home
+          component: Home,
+          meta: {
+            requiresAuth: true
+          }
         },
         {
           path: ':id',
           props: {default: true},
           name: 'detail',
-          component: DetailQ
+          component: DetailQ,
+          meta: {
+            requiresAuth: true
+          }
         }
       ]
     },
