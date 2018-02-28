@@ -3,7 +3,7 @@
     <section class="container"> 
       <div class="columns">
         <div class="column is-offset-3 is-6 is-full-mobile">          
-          <h1>{{ details.title }} </h1><br />
+          <h1>{{ details.title }} <button @click="delQ" v-if="details.user == user.email">DELETE</button></h1><br />
           <span class="right">creator: {{details.user}} || votes: {{details.votes}} <button @click="voteQUp">voteup</button> <button @click="voteQDown">votedown</button></span> <br />
           <h2>Problems: </h2>
           {{ details.content }} <br/>
@@ -14,7 +14,13 @@
           </form>
           <br/>
           ANSWERS:
-          {{answers}}
+          <div v-for="ans in answers" :key="ans.id"> 
+            <h2> {{ans.email}} </h2> <button v-if="ans.email === user.email" @click="delC(ans.id)">DELETE</button>
+            votes: {{ans.votes}} <button @click="voteCUp(ans.voters, ans.votes, ans.id)">voteup</button> <button @click="voteCDown(ans.voters, ans.votes, ans.id)">votedown</button> <br />
+            <h2>answer :</h2>
+            {{ans.content}}
+            <br /> <br />
+          </div>
         </div>
       </div>
     </section>
@@ -50,8 +56,10 @@ export default {
       }
     })
     qdb.doc(this.id).collection('comment').onSnapshot((querySnap) => {
+      let temp = []
       querySnap.forEach((doc) => {
-        this.answers.push({id: doc.id, ...doc.data()})
+        temp.push({id: doc.id, ...doc.data()})
+        this.answers = temp
       })
     })
   },
@@ -59,6 +67,7 @@ export default {
     addAnswer () {
       qdb.doc(this.id).collection('comment').add({
         content: this.answer,
+        email: this.user.email,
         uid: this.user.uid,
         voters: ['init'],
         votes: 0
@@ -87,6 +96,39 @@ export default {
       } else {
         alert('you only can vote once')
       }
+    },
+    voteCUp (voters, votes, id) {
+      if (voters.indexOf(this.user.uid) === -1) {
+        voters.push(this.user.uid)
+        qdb.doc(this.id).collection('comment').doc(id).set({
+          voters: voters,
+          votes: votes+1
+        }, {merge:true})
+      } else {
+        alert('you only vote once, dude.')
+      }
+    },
+    voteCDown (voters, votes, id) {
+      if (voters.indexOf(this.user.uid) === -1) {
+        voters.push(this.user.uid)
+        qdb.doc(this.id).collection('comment').doc(id).set({
+          voters: voters,
+          votes: votes-1
+        }, {merge:true})
+      } else {
+        alert('you only vote once, dude.')
+      }
+    },
+    delQ () {
+      qdb.doc(this.id).delete().then(pl => {
+        alert('question deleted')
+        this.$router.push('/home')
+      })
+    },
+    delC (id) {
+      qdb.doc(this.id).collection('comment').doc(id).delete().then(pl => {
+        alert('comment deleted')
+      })
     }
   }
 }
